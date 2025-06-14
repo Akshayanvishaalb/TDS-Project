@@ -46,18 +46,27 @@ def embed_text(text):
         raise HTTPException(status_code=500, detail=f"Error embedding query: {str(e)}")
 
 def load_vector_store():
-    """Load embeddings and metadata from NPZ."""
+    """Load embeddings and metadata from vector_store.npz safely."""
+    if not os.path.exists(npz_path):
+        raise HTTPException(status_code=500, detail="vector_store.npz not found on server.")
+
     try:
         with np.load(npz_path, allow_pickle=True) as data:
+            if "embeddings" not in data or "metadata" not in data:
+                raise HTTPException(status_code=500, detail="Invalid vector_store.npz: missing keys.")
+
             embeddings = data["embeddings"]
             metadata = data["metadata"]
+
             if isinstance(metadata, np.ndarray):
                 metadata = metadata.item() if metadata.size == 1 else metadata[0]
+
             chunk_metadata = json.loads(metadata)
-        logging.info(f"Loaded embeddings and metadata from {npz_path}")
-        return embeddings, chunk_metadata
+            logging.info(f"Loaded {len(chunk_metadata)} metadata entries and embeddings.")
+            return embeddings, chunk_metadata
+
     except Exception as e:
-        logging.error(f"Error loading NPZ file: {str(e)}")
+        logging.error(f"Failed to load vector store: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to load vector store: {str(e)}")
 
 def extract_content_preview(content):

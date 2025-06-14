@@ -10,7 +10,7 @@ from typing import Optional
 from openai import OpenAI
 
 # Set up logging
-logging.basicConfig(filename="query_openai.log", level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.DEBUG,format="%(asctime)s - %(levelname)s - %(message)s")
 
 app = FastAPI()
 

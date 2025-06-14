@@ -15,7 +15,7 @@ logging.basicConfig(filename="query_openai.log", level=logging.DEBUG, format="%(
 app = FastAPI()
 
 # Initialize Open AI client with proxy base URL
-openai_api_key = "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6IjI0ZjIwMDcyNDhAZHMuc3R1ZHkuaWl0bS5hYy5pbiJ9.q8guqxcfkJTu6zSuO2LJv4GnM8ZaIfyu3qdadB_RehE"
+openai_api_key = os.environ.get("OPEN_API_KEY")
 client = OpenAI(
     api_key=openai_api_key,
     base_url="https://aiproxy.sanand.workers.dev/openai/v1"
